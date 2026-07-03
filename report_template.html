@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAudit Pro — Informe de Auditoría de Seguridad | {{ target_url }}</title>
+    <meta name="description" content="Informe de auditoría de seguridad web generado por WebAudit Pro para {{ target_url }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== CSS RESET & BASE ===== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-card: #111827;
+            --bg-card-alt: #0f1520;
+            --bg-elevated: #1a2332;
+            --border-subtle: #1e293b;
+            --border-hover: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-cyan: #06b6d4;
+            --accent-cyan-dim: rgba(6, 182, 212, 0.15);
+            --accent-cyan-glow: rgba(6, 182, 212, 0.3);
+            --severity-critico: #ef4444;
+            --severity-alto: #f97316;
+            --severity-medio: #eab308;
+            --severity-bajo: #22c55e;
+            --severity-info: #3b82f6;
+            --severity-critico-bg: rgba(239, 68, 68, 0.1);
+            --severity-alto-bg: rgba(249, 115, 22, 0.1);
+            --severity-medio-bg: rgba(234, 179, 8, 0.1);
+            --severity-bajo-bg: rgba(34, 197, 94, 0.1);
+            --severity-info-bg: rgba(59, 130, 246, 0.1);
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
+            --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-glow-cyan: 0 0 20px rgba(6, 182, 212, 0.15), 0 0 60px rgba(6, 182, 212, 0.05);
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
+            --transition-slow: 400ms ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section-header h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-cyan-dim);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            border-radius: var(--radius-sm);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+            transition: border-color var(--transition-normal);
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            padding: 60px 0 40px;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(6, 182, 212, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 10%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .logo-mark {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent-cyan), #0891b2);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--bg-primary);
+            box-shadow: var(--shadow-glow-cyan);
+            position: relative;
+        }
+
+        .logo-mark::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: calc(var(--radius-md) + 2px);
+            background: linear-gradient(135deg, var(--accent-cyan), transparent 60%);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text .brand {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .logo-text .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .hero-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .meta-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .meta-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            word-break: break-all;
+        }
+
+        .meta-value.url {
+            color: var(--accent-cyan);
+        }
+
+        /* ===== RISK DASHBOARD ===== */
+        .risk-dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .risk-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Ring Indicator */
+        .risk-ring-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+        }
+
+        .risk-ring {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin-bottom: 20px;
+        }
+
+        .risk-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .risk-ring-bg {
+            fill: none;
+            stroke: var(--border-subtle);
+            stroke-width: 10;
+        }
+
+        .risk-ring-fill {
+            fill: none;
+            stroke: {{ risk_color }};
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 440;
+            animation: ringFill 1.8s ease-out forwards;
+            filter: drop-shadow(0 0 8px {{ risk_color }});
+        }
+
+        @keyframes ringFill {
+            to {
+                stroke-dashoffset: {% if risk_level == 'CRÍTICO' %}44{% elif risk_level == 'ALTO' %}132{% elif risk_level == 'MEDIO' %}220{% elif risk_level == 'BAJO' %}330{% else %}396{% endif %};
+            }
+        }
+
+        .risk-ring-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .risk-ring-level {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: {{ risk_color }};
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .risk-ring-sublabel {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 2px;
+        }
+
+        .risk-total {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .risk-total strong {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* Stat Cards */
+        .stat-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform var(--transition-normal), border-color var(--transition-normal);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-hover);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .stat-card.critico::before { background: var(--severity-critico); }
+        .stat-card.alto::before { background: var(--severity-alto); }
+        .stat-card.medio::before { background: var(--severity-medio); }
+        .stat-card.bajo::before { background: var(--severity-bajo); }
+        .stat-card.info::before { background: var(--severity-info); }
+
+        .stat-count {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-card.critico .stat-count { color: var(--severity-critico); }
+        .stat-card.alto .stat-count { color: var(--severity-alto); }
+        .stat-card.medio .stat-count { color: var(--severity-medio); }
+        .stat-card.bajo .stat-count { color: var(--severity-bajo); }
+        .stat-card.info .stat-count { color: var(--severity-info); }
+
+        .stat-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* ===== TABLES ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        thead th {
+            background: var(--bg-elevated);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-subtle);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 11px 16px;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+
+        tbody tr:nth-child(even) {
+            background: var(--bg-card-alt);
+        }
+
+        tbody tr:nth-child(odd) {
+            background: var(--bg-card);
+        }
+
+        tbody tr:hover {
+            background: var(--bg-elevated);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        td.mono {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+        }
+
+        /* ===== SEVERITY BADGES ===== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+        }
+
+        .badge-critico {
+            background: var(--severity-critico-bg);
+            color: var(--severity-critico);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+        .badge-alto {
+            background: var(--severity-alto-bg);
+            color: var(--severity-alto);
+            border: 1px solid rgba(249, 115, 22, 0.25);
+        }
+        .badge-medio {
+            background: var(--severity-medio-bg);
+            color: var(--severity-medio);
+            border: 1px solid rgba(234, 179, 8, 0.25);
+        }
+        .badge-bajo {
+            background: var(--severity-bajo-bg);
+            color: var(--severity-bajo);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+        }
+        .badge-info {
+            background: var(--severity-info-bg);
+            color: var(--severity-info);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .badge-critico .badge-dot { background: var(--severity-critico); }
+        .badge-alto .badge-dot { background: var(--severity-alto); }
+        .badge-medio .badge-dot { background: var(--severity-medio); }
+        .badge-bajo .badge-dot { background: var(--severity-bajo); }
+        .badge-info .badge-dot { background: var(--severity-info); }
+
+        /* ===== COLLAPSIBLE DETAILS ===== */
+        details {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            overflow: hidden;
+            transition: border-color var(--transition-normal);
+        }
+
+        details:hover {
+            border-color: var(--border-hover);
+        }
+
+        details[open] {
+            border-color: rgba(6, 182, 212, 0.2);
+        }
+
+        summary {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            list-style: none;
+            user-select: none;
+            transition: background var(--transition-fast);
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::before {
+            content: '▸';
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            transition: transform var(--transition-normal);
+            flex-shrink: 0;
+        }
+
+        details[open] > summary::before {
+            transform: rotate(90deg);
+        }
+
+        summary:hover {
+            background: var(--bg-elevated);
+        }
+
+        .details-content {
+            padding: 0 20px 20px;
+        }
+
+        /* ===== TERMINAL / EVIDENCE BLOCKS ===== */
+        .terminal-block {
+            background: #050810;
+            border: 1px solid #1a2332;
+            border-radius: var(--radius-sm);
+            padding: 0;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .terminal-header {
+            background: #111827;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #1a2332;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ef4444; }
+        .terminal-dot.yellow { background: #eab308; }
+        .terminal-dot.green { background: #22c55e; }
+
+        .terminal-title {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: 6px;
+        }
+
+        .terminal-body {
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: #06d6a0;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        .terminal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .terminal-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: var(--border-subtle);
+            border-radius: 3px;
+        }
+
+        /* ===== FINDINGS CARDS ===== */
+        .finding-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .finding-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+        }
+
+        .finding-severity-bar {
+            width: 4px;
+            min-height: 40px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            align-self: stretch;
+        }
+
+        .finding-severity-bar.critico { background: var(--severity-critico); }
+        .finding-severity-bar.alto { background: var(--severity-alto); }
+        .finding-severity-bar.medio { background: var(--severity-medio); }
+        .finding-severity-bar.bajo { background: var(--severity-bajo); }
+        .finding-severity-bar.info { background: var(--severity-info); }
+
+        .finding-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .finding-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .finding-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .finding-tool-tag {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            padding: 2px 8px;
+            background: var(--accent-cyan-dim);
+            color: var(--accent-cyan);
+            border-radius: 4px;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .finding-body {
+            padding: 20px;
+        }
+
+        .finding-body h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .finding-body h4:first-child {
+            margin-top: 0;
+        }
+
+        .finding-body p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        .recommendation-box {
+            background: rgba(6, 182, 212, 0.06);
+            border: 1px solid rgba(6, 182, 212, 0.15);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-top: 10px;
+        }
+
+        .recommendation-box p {
+            color: var(--accent-cyan) !important;
+            font-size: 0.85rem !important;
+        }
+
+        /* ===== TECHNOLOGIES ===== */
+        .tech-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tech-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+        }
+
+        .tech-tag::before {
+            content: '●';
+            font-size: 0.5rem;
+            color: var(--accent-cyan);
+        }
+
+        .tech-tag:hover {
+            border-color: var(--accent-cyan);
+            color: var(--text-primary);
+        }
+
+        /* ===== WAF INDICATOR ===== */
+        .waf-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-top: 14px;
+        }
+
+        .waf-detected {
+            background: var(--severity-alto-bg);
+            border: 1px solid rgba(249, 115, 22, 0.25);
+            color: var(--severity-alto);
+        }
+
+        .waf-none {
+            background: var(--severity-bajo-bg);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            color: var(--severity-bajo);
+        }
+
+        /* ===== SSL INFO ===== */
+        .ssl-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .ssl-item {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+        }
+
+        .ssl-item-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .ssl-item-value {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+
+        .ssl-vuln-list {
+            list-style: none;
+            margin-top: 14px;
+        }
+
+        .ssl-vuln-list li {
+            padding: 8px 12px;
+            background: var(--severity-critico-bg);
+            border: 1px solid rgba(239, 68, 68, 0.15);
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: var(--severity-critico);
+            font-family: var(--font-mono);
+        }
+
+        .ssl-vuln-list li::before {
+            content: '⚠ ';
+        }
+
+        /* ===== NUCLEI RESULTS ===== */
+        .nuclei-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            transition: border-color var(--transition-fast);
+        }
+
+        .nuclei-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .nuclei-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .nuclei-name {
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+        }
+
+        .nuclei-template-id {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            background: var(--bg-elevated);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .nuclei-url {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--accent-cyan);
+            word-break: break-all;
+        }
+
+        .nuclei-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        /* ===== SQLMAP RESULTS ===== */
+        .sqli-card {
+            background: var(--severity-critico-bg);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+        }
+
+        .sqli-url {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--severity-critico);
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .sqli-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+
+        .sqli-detail-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            padding: 8px 12px;
+        }
+
+        .sqli-detail-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 2px;
+        }
+
+        .sqli-detail-value {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+
+        /* ===== WHOIS ===== */
+        .whois-block {
+            background: #050810;
+            border: 1px solid #1a2332;
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .whois-block::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .whois-block::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .whois-block::-webkit-scrollbar-thumb {
+            background: var(--border-subtle);
+            border-radius: 3px;
+        }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+            margin: 40px 0;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        .empty-state-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .footer-brand span {
+            color: var(--accent-cyan);
+        }
+
+        .footer-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .footer-disclaimer {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+        }
+
+        /* ===== STATUS CODE COLORS ===== */
+        .status-2xx { color: var(--severity-bajo); }
+        .status-3xx { color: var(--severity-info); }
+        .status-4xx { color: var(--severity-medio); }
+        .status-5xx { color: var(--severity-critico); }
+
+        /* ===== PULSE ANIMATION ===== */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .pulse {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        /* ===== COUNT ANIMATION ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out both;
+        }
+
+        .fade-in-up:nth-child(1) { animation-delay: 0.05s; }
+        .fade-in-up:nth-child(2) { animation-delay: 0.1s; }
+        .fade-in-up:nth-child(3) { animation-delay: 0.15s; }
+        .fade-in-up:nth-child(4) { animation-delay: 0.2s; }
+        .fade-in-up:nth-child(5) { animation-delay: 0.25s; }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #1a1a1a !important;
+                font-size: 11pt;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .hero::before {
+                display: none;
+            }
+
+            .card, .meta-item, .stat-card, details,
+            .finding-card, .nuclei-card, .sqli-card,
+            .ssl-item, .risk-ring-container {
+                background: #f8f9fa !important;
+                border-color: #dee2e6 !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+
+            .terminal-block, .whois-block, .terminal-body {
+                background: #f0f0f0 !important;
+                color: #1a1a1a !important;
+                border-color: #ccc !important;
+            }
+
+            .terminal-body {
+                color: #1a1a1a !important;
+            }
+
+            .logo-text .brand {
+                -webkit-text-fill-color: #1a1a1a;
+                background: none;
+            }
+
+            .section-header h2, .finding-title, .hero-title,
+            .nuclei-name, .meta-value {
+                color: #1a1a1a !important;
+            }
+
+            .text-primary, .stat-count, th, td, summary,
+            .risk-ring-level, .ssl-item-value, p {
+                color: #333 !important;
+            }
+
+            .meta-label, .stat-label, .footer-meta,
+            .footer-disclaimer, .text-secondary, .text-muted,
+            .finding-body p, .nuclei-desc {
+                color: #555 !important;
+            }
+
+            thead th {
+                background: #e9ecef !important;
+            }
+
+            tbody tr:nth-child(even) {
+                background: #f2f2f2 !important;
+            }
+
+            tbody tr:nth-child(odd) {
+                background: #fff !important;
+            }
+
+            .risk-ring-fill {
+                animation: none !important;
+                stroke-dashoffset: {% if risk_level == 'CRÍTICO' %}44{% elif risk_level == 'ALTO' %}132{% elif risk_level == 'MEDIO' %}220{% elif risk_level == 'BAJO' %}330{% else %}396{% endif %} !important;
+            }
+
+            .pulse, .fade-in-up {
+                animation: none !important;
+            }
+
+            details {
+                open: true;
+            }
+
+            details > summary::before {
+                content: '▾' !important;
+            }
+
+            .footer {
+                margin-top: 30px;
+            }
+
+            a {
+                color: #0066cc !important;
+            }
+
+            .badge {
+                border: 1px solid currentColor !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .hero {
+                padding: 32px 0 24px;
+            }
+
+            .logo-container {
+                margin-bottom: 20px;
+            }
+
+            .logo-mark {
+                width: 44px;
+                height: 44px;
+                font-size: 1.2rem;
+            }
+
+            .logo-text .brand {
+                font-size: 1.35rem;
+            }
+
+            .hero-title {
+                font-size: 1.2rem;
+            }
+
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .section-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .finding-header {
+                flex-direction: column;
+            }
+
+            .ssl-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .sqli-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="logo-container">
+                <div class="logo-mark">W</div>
+                <div class="logo-text">
+                    <span class="brand">WebAudit Pro</span>
+                    <span class="subtitle">Auditoría de Seguridad Web</span>
+                </div>
+            </div>
+
+            <h1 class="hero-title">Informe de Auditoría de Seguridad</h1>
+            <p class="hero-subtitle">Análisis de seguridad automatizado con evaluación de riesgos integral del objetivo especificado.</p>
+
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <span class="meta-label">Objetivo</span>
+                    <span class="meta-value url">{{ target_url }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Dirección IP</span>
+                    <span class="meta-value">{{ target_ip }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Fecha de Escaneo</span>
+                    <span class="meta-value">{{ scan_date }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Duración del Escaneo</span>
+                    <span class="meta-value">{{ scan_duration }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+
+        <!-- ===== RESUMEN EJECUTIVO — DASHBOARD ===== -->
+        <section class="section" id="resumen-ejecutivo">
+            <div class="section-header">
+                <div class="section-icon">📊</div>
+                <h2>Resumen Ejecutivo</h2>
+            </div>
+
+            <div class="risk-dashboard">
+                <!-- Ring Indicator -->
+                <div class="risk-ring-container">
+                    <div class="risk-ring">
+                        <svg viewBox="0 0 160 160">
+                            <circle class="risk-ring-bg" cx="80" cy="80" r="70" />
+                            <circle class="risk-ring-fill" cx="80" cy="80" r="70" />
+                        </svg>
+                        <div class="risk-ring-label">
+                            <div class="risk-ring-level pulse">{{ risk_level }}</div>
+                            <div class="risk-ring-sublabel">Nivel de Riesgo</div>
+                        </div>
+                    </div>
+                    <div class="risk-total">
+                        <strong>{{ summary_stats.total }}</strong>
+                        Hallazgos Totales
+                    </div>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="stat-cards">
+                    <div class="stat-card critico fade-in-up">
+                        <div class="stat-count">{{ summary_stats.critico }}</div>
+                        <div class="stat-label">Crítico</div>
+                    </div>
+                    <div class="stat-card alto fade-in-up">
+                        <div class="stat-count">{{ summary_stats.alto }}</div>
+                        <div class="stat-label">Alto</div>
+                    </div>
+                    <div class="stat-card medio fade-in-up">
+                        <div class="stat-count">{{ summary_stats.medio }}</div>
+                        <div class="stat-label">Medio</div>
+                    </div>
+                    <div class="stat-card bajo fade-in-up">
+                        <div class="stat-count">{{ summary_stats.bajo }}</div>
+                        <div class="stat-label">Bajo</div>
+                    </div>
+                    <div class="stat-card info fade-in-up">
+                        <div class="stat-count">{{ summary_stats.info }}</div>
+                        <div class="stat-label">Informativo</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== TECNOLOGÍAS DETECTADAS ===== -->
+        <section class="section" id="tecnologias">
+            <div class="section-header">
+                <div class="section-icon">🔍</div>
+                <h2>Tecnologías Detectadas</h2>
+            </div>
+
+            <div class="card">
+                {% if technologies %}
+                <div class="tech-grid">
+                    {% for tech in technologies %}
+                    <span class="tech-tag">{{ tech }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔎</div>
+                    <p>No se detectaron tecnologías.</p>
+                </div>
+                {% endif %}
+
+                {% if waf_detected %}
+                <div class="waf-indicator waf-detected">
+                    🛡️ WAF Detectado: <strong>{{ waf_detected }}</strong>
+                </div>
+                {% else %}
+                <div class="waf-indicator waf-none">
+                    ✅ No se detectó WAF (Web Application Firewall)
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== PUERTOS ABIERTOS ===== -->
+        <section class="section" id="puertos-abiertos">
+            <div class="section-header">
+                <div class="section-icon">🌐</div>
+                <h2>Puertos Abiertos</h2>
+            </div>
+
+            <details open>
+                <summary>Resultados del Escaneo de Puertos — {{ open_ports|length }} puerto{{ 's' if open_ports|length != 1 else '' }} descubierto{{ 's' if open_ports|length != 1 else '' }}</summary>
+                <div class="details-content">
+                    {% if open_ports %}
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Puerto</th>
+                                    <th>Servicio</th>
+                                    <th>Versión</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for port in open_ports %}
+                                <tr>
+                                    <td class="mono">{{ port.port }}</td>
+                                    <td>{{ port.service }}</td>
+                                    <td class="mono">{{ port.version }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔒</div>
+                        <p>No se encontraron puertos abiertos.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </details>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== DIRECTORIOS DESCUBIERTOS ===== -->
+        <section class="section" id="directorios">
+            <div class="section-header">
+                <div class="section-icon">📁</div>
+                <h2>Directorios Descubiertos</h2>
+            </div>
+
+            <details>
+                <summary>Enumeración de Directorios — {{ directories_found|length }} ruta{{ 's' if directories_found|length != 1 else '' }} encontrada{{ 's' if directories_found|length != 1 else '' }}</summary>
+                <div class="details-content">
+                    {% if directories_found %}
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ruta</th>
+                                    <th>Código de Estado</th>
+                                    <th>Tamaño</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dir in directories_found %}
+                                <tr>
+                                    <td class="mono">{{ dir.path }}</td>
+                                    <td class="mono {% if dir.status >= 200 and dir.status < 300 %}status-2xx{% elif dir.status >= 300 and dir.status < 400 %}status-3xx{% elif dir.status >= 400 and dir.status < 500 %}status-4xx{% else %}status-5xx{% endif %}">{{ dir.status }}</td>
+                                    <td class="mono">{{ dir.size }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📂</div>
+                        <p>No se descubrieron directorios adicionales.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </details>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== HALLAZGOS DE SEGURIDAD ===== -->
+        <section class="section" id="hallazgos">
+            <div class="section-header">
+                <div class="section-icon">🛡️</div>
+                <h2>Hallazgos de Seguridad</h2>
+            </div>
+
+            {% if findings %}
+            {% for finding in findings %}
+            <div class="finding-card">
+                <div class="finding-header">
+                    <div class="finding-severity-bar {{ finding.severity }}"></div>
+                    <div class="finding-meta">
+                        <div class="finding-title">{{ finding.title }}</div>
+                        <div class="finding-tags">
+                            <span class="badge badge-{{ finding.severity }}">
+                                <span class="badge-dot"></span>
+                                {{ finding.severity|upper }}
+                            </span>
+                            <span class="finding-tool-tag">{{ finding.tool }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="finding-body">
+                    <h4>Descripción</h4>
+                    <p>{{ finding.description }}</p>
+
+                    {% if finding.evidence %}
+                    <h4>Evidencia</h4>
+                    <div class="terminal-block">
+                        <div class="terminal-header">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
+                            <span class="terminal-title">evidencia — {{ finding.tool }}</span>
+                        </div>
+                        <div class="terminal-body">{{ finding.evidence }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if finding.recommendation %}
+                    <h4>Recomendación</h4>
+                    <div class="recommendation-box">
+                        <p>{{ finding.recommendation }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="card">
+                <div class="empty-state">
+                    <div class="empty-state-icon">✅</div>
+                    <p>No se identificaron hallazgos de seguridad.</p>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== ANÁLISIS SSL/TLS ===== -->
+        <section class="section" id="ssl-tls">
+            <div class="section-header">
+                <div class="section-icon">🔐</div>
+                <h2>Análisis SSL/TLS</h2>
+            </div>
+
+            {% if ssl_info %}
+            <div class="card">
+                <div class="ssl-grid">
+                    <div class="ssl-item">
+                        <div class="ssl-item-label">Protocolo</div>
+                        <div class="ssl-item-value">{{ ssl_info.protocol }}</div>
+                    </div>
+                    <div class="ssl-item">
+                        <div class="ssl-item-label">Suite de Cifrado</div>
+                        <div class="ssl-item-value">{{ ssl_info.cipher }}</div>
+                    </div>
+                    <div class="ssl-item">
+                        <div class="ssl-item-label">Sujeto del Certificado</div>
+                        <div class="ssl-item-value">{{ ssl_info.cert_subject }}</div>
+                    </div>
+                    <div class="ssl-item">
+                        <div class="ssl-item-label">Emisor del Certificado</div>
+                        <div class="ssl-item-value">{{ ssl_info.cert_issuer }}</div>
+                    </div>
+                    <div class="ssl-item">
+                        <div class="ssl-item-label">Fecha de Expiración</div>
+                        <div class="ssl-item-value">{{ ssl_info.cert_expiry }}</div>
+                    </div>
+                </div>
+
+                {% if ssl_info.vulnerabilities %}
+                <h4 style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:20px;margin-bottom:10px;">Vulnerabilidades SSL/TLS Detectadas</h4>
+                <ul class="ssl-vuln-list">
+                    {% for vuln in ssl_info.vulnerabilities %}
+                    <li>{{ vuln }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔓</div>
+                    <p>No se obtuvo información SSL/TLS. El objetivo puede no utilizar HTTPS.</p>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== RESULTADOS DE NUCLEI ===== -->
+        <section class="section" id="nuclei">
+            <div class="section-header">
+                <div class="section-icon">⚛️</div>
+                <h2>Resultados de Nuclei</h2>
+            </div>
+
+            <details {% if nuclei_results %}open{% endif %}>
+                <summary>Escaneo de Plantillas Nuclei — {{ nuclei_results|length }} resultado{{ 's' if nuclei_results|length != 1 else '' }}</summary>
+                <div class="details-content">
+                    {% if nuclei_results %}
+                    {% for result in nuclei_results %}
+                    <div class="nuclei-card">
+                        <div class="nuclei-header">
+                            <div>
+                                <div class="nuclei-name">{{ result.name }}</div>
+                                <span class="nuclei-template-id">{{ result.template_id }}</span>
+                            </div>
+                            <span class="badge badge-{{ result.severity }}">
+                                <span class="badge-dot"></span>
+                                {{ result.severity|upper }}
+                            </span>
+                        </div>
+                        <div class="nuclei-url">{{ result.matched_url }}</div>
+                        {% if result.description %}
+                        <div class="nuclei-desc">{{ result.description }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✅</div>
+                        <p>El escaneo de Nuclei no arrojó resultados.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </details>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== INYECCIÓN SQL (SQLMap) ===== -->
+        <section class="section" id="sqli">
+            <div class="section-header">
+                <div class="section-icon">💉</div>
+                <h2>Inyección SQL (SQLMap)</h2>
+            </div>
+
+            <details {% if sqlmap_results %}open{% endif %}>
+                <summary>Resultados de SQLMap — {{ sqlmap_results|length }} inyección{{ 'es' if sqlmap_results|length != 1 else '' }} encontrada{{ 's' if sqlmap_results|length != 1 else '' }}</summary>
+                <div class="details-content">
+                    {% if sqlmap_results %}
+                    {% for sqli in sqlmap_results %}
+                    <div class="sqli-card">
+                        <div class="sqli-url">🎯 {{ sqli.url }}</div>
+                        <div class="sqli-details">
+                            <div class="sqli-detail-item">
+                                <div class="sqli-detail-label">Parámetro</div>
+                                <div class="sqli-detail-value">{{ sqli.parameter }}</div>
+                            </div>
+                            <div class="sqli-detail-item">
+                                <div class="sqli-detail-label">Tipo de Inyección</div>
+                                <div class="sqli-detail-value">{{ sqli.type }}</div>
+                            </div>
+                            <div class="sqli-detail-item">
+                                <div class="sqli-detail-label">Payload</div>
+                                <div class="sqli-detail-value">{{ sqli.payload }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✅</div>
+                        <p>No se detectaron vulnerabilidades de inyección SQL.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </details>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== INFORMACIÓN WHOIS ===== -->
+        <section class="section" id="whois">
+            <div class="section-header">
+                <div class="section-icon">📋</div>
+                <h2>Información WHOIS</h2>
+            </div>
+
+            <details>
+                <summary>Datos de Registro del Dominio</summary>
+                <div class="details-content">
+                    {% if whois_info %}
+                    <div class="whois-block">{{ whois_info }}</div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>No se obtuvo información WHOIS para el objetivo.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </details>
+        </section>
+
+        <hr class="divider">
+
+        <!-- ===== RECOMENDACIONES GENERALES ===== -->
+        <section class="section" id="recomendaciones">
+            <div class="section-header">
+                <div class="section-icon">📝</div>
+                <h2>Recomendaciones Generales</h2>
+            </div>
+
+            <div class="card">
+                <div class="recommendation-box" style="margin-top:0;">
+                    <p><strong>1.</strong> Remediar de inmediato todos los hallazgos clasificados como <strong>CRÍTICO</strong> y <strong>ALTO</strong>.</p>
+                </div>
+                <div class="recommendation-box">
+                    <p><strong>2.</strong> Implementar un proceso de gestión de parches para mantener todos los componentes de software actualizados.</p>
+                </div>
+                <div class="recommendation-box">
+                    <p><strong>3.</strong> Configurar un Web Application Firewall (WAF) si no está implementado actualmente.</p>
+                </div>
+                <div class="recommendation-box">
+                    <p><strong>4.</strong> Realizar auditorías de seguridad periódicas y pruebas de penetración de forma programada.</p>
+                </div>
+                <div class="recommendation-box">
+                    <p><strong>5.</strong> Revisar y reforzar las políticas de seguridad de encabezados HTTP (CSP, HSTS, X-Frame-Options, etc.).</p>
+                </div>
+                <div class="recommendation-box">
+                    <p><strong>6.</strong> Implementar monitoreo de seguridad continuo y sistemas de detección de intrusiones (IDS/IPS).</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-brand">Web<span>Audit</span> Pro</div>
+            <div class="footer-meta">
+                Informe generado el {{ scan_date }} · Duración del escaneo: {{ scan_duration }}
+            </div>
+            <div class="footer-disclaimer">
+                <strong>Aviso Legal:</strong> Este informe ha sido generado de forma automatizada con fines exclusivamente informativos y educativos.
+                Los hallazgos presentados se basan en técnicas de análisis automatizado y pueden requerir validación manual.
+                WebAudit Pro no se responsabiliza por el uso indebido de la información contenida en este documento.
+                La auditoría de seguridad debe realizarse únicamente con autorización explícita del propietario del sistema objetivo.
+                Toda la información es confidencial y no debe ser distribuida sin autorización previa.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
