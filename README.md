@@ -1,4 +1,4 @@
-HERRAMIENTAS NECESARIAS:
+HERRAMIENTAS NECESARIAS: (BÁSICAS EN KALI LINUX)
 <br> <br>
 "nmap":       "Escáner de puertos y servicios", <br> 
     "whatweb":    "Detección de tecnologías web", <br>
