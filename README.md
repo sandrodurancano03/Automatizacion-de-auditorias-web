@@ -1,6 +1,6 @@
 HERRAMIENTAS NECESARIAS:
-<br>
-"nmap":       "Escáner de puertos y servicios", <br> <br>
+<br> <br>
+"nmap":       "Escáner de puertos y servicios", <br> 
     "whatweb":    "Detección de tecnologías web", <br>
     "wafw00f":    "Detección de WAF (Web Application Firewall)", <br>
     "whois":      "Consulta de información de dominio", <br>
